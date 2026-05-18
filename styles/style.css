@@ -1,0 +1,560 @@
+.page {
+    visibility: hidden;
+    position: absolute;
+    margin-top: .5em;
+    padding-top: .5em;
+
+    max-width: 100%;
+    max-height: 100%;
+    overflow: hidden;
+}
+
+.page.active {
+    visibility: visible;
+    position: relative;
+}
+
+.solution {
+    border-radius: 1em;
+    height: 8em;
+    width: 12em;
+    color: black;
+    padding-top: .2em;
+    justify-content: center;
+    align-items: center;
+}
+
+.header {
+    display: inline-flex;
+    gap: 1em;
+    height: 1.5em;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.underline {
+    width: 19em;
+    margin: 0;
+    height: 2px;
+    background: hsl(209, 7%, 78%);
+}
+
+.underline.game {
+    margin-left: 2em;
+    width: 15em;
+    background: skyblue;
+}
+
+.countdown-horizontal-icon {
+    height: 1.50em;
+    padding-left: 1em;
+}
+
+.delete-icon {
+    color: white;
+    height: 1.35em;
+}
+
+.icon {
+    height: 1.25em;
+    user-select: none;
+    cursor: pointer;
+}
+.icon.back {
+    height: 2em;
+}
+
+.icon.hidden {
+    visibility: hidden;
+    user-select: none;
+}
+
+.button {
+    height: 2.5em;
+    background: black;
+    border: none;
+    border-radius: 2em;
+    font-size: 0.8em;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+}
+
+.button.play {
+    width: 9em;
+    margin-top: 1.60em;
+}
+
+.button.welcome {
+    width: 9em;
+}
+
+.button.share {
+    width: 9em;
+}
+
+.button.share.inactive {
+    background-color: grey;
+}
+
+.button.clear {
+    width: 6em;
+    color: black;
+    background: white;
+    border: solid black .1em;
+}
+
+.button.hint {
+    width: 6em;
+    color: black;
+    background: white;
+    border: solid black .1em;
+}
+
+button.hint.changed {
+    background-color: black;
+    color: white;
+    cursor: none;
+    pointer-events: none;
+}
+
+.button.play-again {
+    background-color: var(--change-color);
+    color: white;
+    width: 9em;
+}
+
+.button.play-again.hidden {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.timer {
+    margin-top: 1em;
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    border-radius: .25em;
+    border: solid black;
+    width: 5em;
+    padding: 0.2em;
+}
+
+.card {
+    border: .1em solid black;
+    border-radius: .2em;
+    padding: .4em;
+    margin: .2em;
+    width: 2em;
+    height: 2em;
+}
+
+.card-button {
+    color: black;
+    background: white;
+    border: .1em solid black;
+    border-radius: .1em;
+    padding-bottom: .35em;
+    margin: .05em;
+    width: 1.8em;
+    height: 2.25em;
+    font-weight: bold;
+    font-size: 1em;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    text-align: center;
+}
+
+.card-button.hidden {
+    cursor: none;
+    pointer-events: none;
+    display: none;
+}
+
+.card-button.non-interactive {
+    cursor: none;
+    pointer-events: none;
+}
+
+.guess {
+    border: .1em solid var(--guess-color);
+    background: var(--guess-color);
+}
+
+.changed {
+    border: none;
+    background-color: var(--change-color);
+}
+
+.target-box {
+    background-color: var(--color);
+    width: 4em;
+    height: 1.5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.statistic {
+    display: inline;
+    border-color: black;
+    width: auto;
+    height: auto;
+    grid-column: span 1;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.statistic.large {
+    grid-column: span 3;
+}
+
+.statistic-data {
+    font-size: 1.25em;
+    margin-bottom: -.5em;
+}
+
+.statistic-label {
+    font-size: .65em;
+}
+
+.stats-grid-small {
+    display: grid;
+    justify-content: center;
+    align-content: center;
+    grid-template-columns: repeat(4, 3em);
+    grid-template-rows: repeat(1, 3em);
+    gap: .5em;
+    margin-top: -.5em;
+}
+
+.stats-grid-large {
+    display: grid;
+    justify-content: center;
+    align-content: center;
+    grid-template-columns: repeat(5, 3em);
+    grid-template-rows: repeat(1, 3em);
+    gap: .5em;
+    margin-top: -.5em;
+}
+
+.margin-right {
+    margin-right: 0.25em;
+}
+
+#stats.page {
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
+}
+
+.stats-screen {
+    width: 19em;
+    margin: 0 auto;
+    padding-bottom: 1em;
+    position: relative;
+}
+
+.stats-top-bar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.35em;
+    margin-top: 0.6em;
+}
+
+.stats-back-link {
+    color: #000;
+    font-size: 0.54em;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.stats-close-icon {
+    height: 0.85em;
+}
+
+#stats .stats-header {
+    width: 4.8em;
+    margin-top: 0.25em;
+}
+
+.text-box-stats {
+    width: 14.8em;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.2em;
+}
+
+.button.stats {
+    height: 2.15em;
+    border-radius: 0.2em;
+    border: 1px solid #000;
+    background: #fff;
+    color: #000;
+    font-size: 0.66em;
+    width: 100%;
+}
+
+.button.stats.selected {
+    background: #000;
+    color: #fff;
+}
+
+.button.stats.share {
+    border-radius: 2em;
+    width: 9em;
+}
+
+#stats .overlay {
+    display: none;
+}
+
+#stats .overlay.active {
+    display: block;
+}
+
+.stats-performance-message {
+    justify-content: center;
+    width: 16.4em;
+    text-align: center;
+    font-size: 0.9em;
+    line-height: 1.2;
+}
+
+.hr-stats {
+    border: none;
+    border-top: 1px solid #7d7d7d;
+    width: 15.2em;
+}
+
+.stats-grid {
+    display: grid;
+    justify-content: center;
+    gap: 0.3em;
+}
+
+.stats-grid-performance {
+    grid-template-columns: repeat(3, 3.45em);
+}
+
+.stats-grid-performance .statistic-data {
+    font-size: 1.55em;
+    margin: 0;
+    line-height: 1;
+}
+
+.stats-grid-performance .statistic-label {
+    font-size: 0.62em;
+    margin: 0.2em 0 0;
+    line-height: 1.1;
+}
+
+.stats-legacy-grid {
+    display: none;
+}
+
+.stats-distribution-grid {
+    width: 15.8em;
+    margin-top: 0.4em;
+}
+
+.stats-distribution-row {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 6.2em 1fr;
+    align-items: center;
+    gap: 0.35em;
+}
+
+.stats-distribution-row .text-stats-guess {
+    margin: 0;
+    font-size: 0.62em;
+}
+
+.stats-distribution-row .stat-bar {
+    font-size: 0.72em;
+    min-height: 1.45em;
+    line-height: 1.45em;
+    padding-top: 0;
+}
+
+.stats-cumulative-entry {
+    width: 15.2em;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2em 1fr 2.6em;
+    align-items: center;
+    font-size: 0.66em;
+    min-height: 1.9em;
+}
+
+.stats-cumulative-number {
+    text-align: center;
+}
+
+.stats-cumulative-name {
+    padding-left: 0.35em;
+    text-align: left;
+}
+
+.stats-cumulative-percent {
+    text-align: right;
+}
+
+.stats-percentile-graph {
+    width: 15.2em;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2.2em 1fr;
+    gap: 0.4em;
+}
+
+.stats-percentile-label {
+    font-size: 0.52em;
+    color: #222;
+    text-align: left;
+    line-height: 1;
+}
+
+.stats-percentile-label.top {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: start;
+}
+
+.stats-percentile-label.middle {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
+}
+
+.stats-percentile-label.bottom {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: end;
+}
+
+.stats-percentile-chart {
+    grid-column: 2;
+    grid-row: 1;
+    height: 4.5em;
+    position: relative;
+}
+
+.stats-percentile-guide {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    border-top: 1px dotted #9b9b9b;
+}
+
+.stats-percentile-guide.top {
+    top: 0;
+}
+
+.stats-percentile-guide.middle {
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.stats-percentile-guide.bottom {
+    bottom: 0;
+}
+
+.stats-percentile-svg {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 1;
+}
+
+.stats-percentile-svg polyline {
+    fill: none;
+    stroke: #009982;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.clear-puzzle-data-button {
+    border: none;
+    background: transparent;
+    color: #4a4a4a;
+    font-size: 0.56em;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.text-box-info.small {
+    font-size: 0.52em;
+    justify-content: center;
+}
+
+.text-box-info.performance.heading {
+    font-size: 0.65em;
+}
+
+.stats-yes-no-popup,
+.stats-name-popup {
+    position: absolute;
+    left: 50%;
+    top: 8.3em;
+    transform: translateX(-50%);
+    width: 14em;
+    background: #fff;
+    border: 1px solid #000;
+    border-radius: 0.35em;
+    padding: 0.7em;
+    z-index: 15;
+}
+
+.stats-yes-no-popup.hidden,
+.stats-name-popup.hidden {
+    display: none;
+}
+
+.stats-yes-no-popup-text,
+.stats-name-popup-title {
+    font-size: 0.6em;
+    text-align: center;
+}
+
+.stats-yes-no-popup-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.35em;
+    margin-top: 0.65em;
+}
+
+.stats-yes-no-popup-button,
+.stats-name-popup-submit {
+    border: 1px solid #000;
+    background: #fff;
+    color: #000;
+    font-size: 0.55em;
+    border-radius: 0.2em;
+    height: 2.1em;
+    cursor: pointer;
+}
+
+.stats-name-popup-input {
+    width: 100%;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    border: 1px solid #000;
+    border-radius: 0.2em;
+    height: 2.2em;
+    padding: 0 0.5em;
+    font-size: 0.58em;
+}
+
+.stats-name-popup-submit[disabled] {
+    opacity: 0.45;
+    cursor: not-allowed;
+}

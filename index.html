@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="styles/format.css">
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/text.css">
+    <script src="scripts/timer.js" defer></script>
+    <script src="scripts/game.js" defer></script>
+    <script src="scripts/main.js" defer></script>
+    <script src="scripts/unitTesting.js" defer></script>
+</head>
+<body class="off-white">
+    <div id="game" class="page">
+        <div>
+            <div class="alert-container" data-alert-container></div>
+            <div class="header">
+                <div>
+                    <img src="resources/Uimhir_horizontal.svg" class="countdown-horizontal-icon">
+                </div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div>
+                    <a onclick="showPage('info')">
+                        <img src="resources/info-icon.svg" class="icon">
+                    </a>
+                </div>
+                <div>
+                    <a onclick="showPage('stats')">
+                        <img src="resources/stats-icon.svg" class="icon">
+                    </a>
+                </div>
+            </div>
+            <div class="underline"></div>
+        </div>
+        <div class="game-popup-slot">
+            <div class="text-game-popup hidden" data-game-popup></div>
+        </div>
+        <div class="centered gap" style="--amount: 1em; gap: 0.8em;">
+            <canvas id="targetCanvas" width="400" height="400" style="width: 6em; height: 6em;"></canvas>
+            <canvas class="" id="circleCanvas" width="400" height="400" style="width: 6em; height: 6em;"></canvas>
+            <div class="no-display solution" style="height: 6em; width: 18em;" data-answer-element>
+                <div class="centered">
+                    <div class="sums-box answer inline" data-solution-sums>
+                        <div class="sum">175 + 20 = 195</div>
+                        <div class="sum">175 + 20 = 195</div>
+                        <div class="sum">175 + 20 = 195</div>
+                        <div class="sum">175 + 20 = 195</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="no-display" aria-hidden="true">
+            <div data-target>350</div>
+            <div data-answer>350</div>
+        </div>
+        <div class="gap centered relative" style="--amount: 2.5em">
+            <div class="text-game-sums-heading centered absolute">
+                Your Sums
+            </div>
+        </div>
+        <div class="centered" style="--amount: 1em">
+            <div class="sums-box"  data-sums>
+                <div class="sum">
+                    <div class="sum-number">1</div>
+                    <div class="sum-text">175 + 15 = 190</div>
+                </div>
+                <div class="sum">
+                    <div class="sum-number">2</div>
+                    <div class="sum-text">175 + 15 = 190</div>
+                </div>
+                <div class="sum">
+                    <div class="sum-number" data-num>3</div>
+                    <div class="sum-text" data-sum>175 + 15 = 190</div>
+                </div>
+                <div class="sum">
+                    <div class="sum-number">4</div>
+                    <div class="sum-text">175 + 15 = 190</div>
+                </div>
+                <div class="sum">
+                    <div class="sum-number">5</div>
+                    <div class="sum-text">175 + 15 = 190</div>
+                </div>
+            </div>
+        </div>
+        <div class="keyboard gap" style="--amount: 1em" data-keyboard>
+            <button class="key small grey">75</button>
+            <button class="key small grey">25</button>
+            <button class="key small grey">10</button>
+            <button class="key small grey">1</button>
+            <button class="key small grey">2</button>
+            <button class="key small grey">3</button>
+            
+            <button class="key medium white"></button>
+            <button class="key medium white"></button>
+            <button class="key medium white"></button>
+            <button class="key medium white"></button>
+            
+            <div class="key-gap"></div>
+
+            <button class="key medium dark largerText">+</button>
+            <button class="key medium dark largerText">-</button>
+            <button class="key medium dark">x</button>
+            <button class="key medium dark largerText">÷</button>
+            
+            <button class="key large dark" onclick="pressClear()" data-clear>Clear</button>
+            <button class="key large dark" onclick="pressBackspace()" data-backspace>
+                <img src="resources/delete-icon.svg" class="delete-icon">
+            </button>
+        </div>
+        <div class="submit-row gap" style="--amount: 1.7125em">
+            <button class="button play-again" data-next>Submit answer</button>
+            <div class="text-game-number" data-game-text>1/3</div>
+        </div>
+        <div class="centered text-game-letters">
+            <div data-game-letters></div>
+        </div>
+        <div>
+            <div class="centered gap">
+                <button class="button play-again gap no-display" style="--amount: 0.3em" data-next-two>Play Next</button>
+            </div>
+        </div>
+    </div>
+    <div id="info" class="page active">
+        <div>
+            <div class="alert-container" data-alert-container></div>
+            <div class="header">
+                <div>
+                    <img src="resources/Uimhir_horizontal.svg" class="countdown-horizontal-icon">
+                </div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div class="margin-right"></div>
+                <div>
+                    <a onclick="showPage('stats')">
+                        <img src="resources/stats-icon.svg" class="icon">
+                    </a>
+                </div>
+            </div>
+            <div class="underline"></div>
+        </div>
+        <div class="text-info-title gap" style="--amount: 0.8em">
+            How To Play
+        </div>
+        <div class="">
+            <div class="text-box-info heading gap" style="--amount: 1.1em">
+                Goal
+            </div>
+        </div>
+        <div class="">
+            <div class="text-box-info gap" style="--amount: 0.4em">
+                Get as close as possible to the target number in five attempts.
+            </div>
+        </div>
+        <div class="gap centered" style="--amount: 0.5em">
+            <div class="text-game-heading centered">
+                Target
+            </div>
+        </div>
+        <div class="centered">
+            <div class="text-game-target" style="--color: green">421</div>
+        </div>
+        <div class="gap centered" style="--amount: .5em">
+            <div class="text-game-heading centered">
+                Your Answer
+            </div>
+        </div>
+        <div class="centered">
+            <div class="text-game-answer">420</div>
+        </div>
+        <div class="gap centered relative" style="--amount: 1em">
+            <div class="text-game-heading centered absolute">
+                Your Five Sums
+            </div>
+        </div>
+        <div class="centered" style="--amount: 1em">
+            <div class="sums-box">
+                <div class="sum">
+                    <div class="sum-number green">1</div>
+                    <div class="sum-text">100 x 4 = 400</div>
+                </div>
+                <div class="sum">
+                    <div class="sum-number green">2</div>
+                    <div class="sum-text">8 + 7 = 15</div>
+                </div>
+                <div class="sum">
+                    <div class="sum-number green" data-num>3</div>
+                    <div class="sum-text" data-sum>5 + 15 = 20</div>
+                </div>
+                <div class="sum">
+                    <div class="sum-number green">4</div>
+                    <div class="sum-text">400 + 20 = 420</div>
+                </div>
+                <div class="sum">
+                    <div class="sum-number">5</div>
+                    <div class="sum-text"></div>
+                </div>
+            </div>
+        </div>
+        <div class="">
+            <div class="text-box-info heading gap" style="--amount: 0.4em">
+                Rules
+            </div>
+        </div>
+        <div class="">
+            <div class="text-box-info gap" style="--amount: .2em">
+                Each number can be used once, including sum results. Numbers will change to green when used.
+            </div>
+        </div>
+        <div class="">
+            <div class="text-box-info heading gap" style="--amount: 0.4em">
+                Results
+            </div>
+        </div>
+        <div class="">
+            <div class="text-box-info-single gap" style="--amount: .2em">
+                After three daily rounds, your accuracy will be graded based on how close you are to each target.
+                The closer the better.
+            </div>
+            <div class="text-box-info-single gap" style="--amount: 1em">Have feedback? <a href="mailto:customerhelp@independent?subject=Uimhir%20Puzzle%20Feedback.">Email us</a>.</div>
+        </div>
+        <div class="centered gap" style="--amount: 0.2em">
+            <button class="button play" data-play-button>
+                Play
+            </button>
+        </div>
+    </div>
+    <div id="stats" class="page">
+        <div class="stats-screen">
+            <div class="alert-container" data-stats-alert-container></div>
+            <div class="stats-top-bar">
+                <a class="stats-back-link" onclick="showPage('game')">Back to Puzzle</a>
+                <a onclick="showPage('game')">
+                    <img src="resources/x-symbol.svg" class="icon stats-close-icon" alt="Close stats screen">
+                </a>
+            </div>
+            <div class="centered">
+                <img src="resources/Uimhir_vertical.svg" class="stats-header" alt="Uimhir logo">
+            </div>
+            <div class="centered box gap" style="--amount: 2em">
+                <div class="text-box-stats centered">
+                    <button class="button stats selected" data-stats-button data-performance onclick="pressStatsButton('performance')">
+                        Performance
+                    </button>
+                    <button class="button stats" data-stats-button data-rankings onclick="pressStatsButton('rankings')">
+                        Rankings
+                    </button>
+                </div>
+            </div>
+
+            <div class="stats-yes-no-popup hidden" data-yes-no-popup>
+                <div class="stats-yes-no-popup-text" data-yes-no-popup-text>
+                    Do you want to add your name to the leaderboard?
+                </div>
+                <div class="stats-yes-no-popup-actions">
+                    <button class="stats-yes-no-popup-button yes" data-yes-no-popup-yes>
+                        Yes
+                    </button>
+                    <button class="stats-yes-no-popup-button no" data-yes-no-popup-no>
+                        No
+                    </button>
+                </div>
+            </div>
+
+            <div class="stats-name-popup hidden" data-name-popup>
+                <div class="stats-name-popup-title">
+                    Enter your name
+                </div>
+                <input
+                    class="stats-name-popup-input"
+                    type="text"
+                    maxlength="15"
+                    placeholder="Name"
+                    data-name-popup-input
+                >
+                <button class="stats-name-popup-submit" data-name-popup-submit disabled>
+                    Submit
+                </button>
+            </div>
+
+            <div class="overlay active" data-stats-overlay data-overlay-performance>
+                <div class="centered">
+                    <div class="text-box-info gap centered stats-performance-message" style="--amount: 1.15em" data-performance-message>
+                        You ranked in the top 18% today - <br> well done! Your average rank <br> over the last 30 days has been 54%.
+                    </div>
+                </div>
+
+                <div class="stats-grid-large stats-legacy-grid" data-statistics-first>
+                    <div class="statistic">
+                        <h4 class="statistic-data">0</h4>
+                        <p class="statistic-label">Correct</p>
+                    </div>
+                    <div class="statistic">
+                        <h4 class="statistic-data">0</h4>
+                        <p class="statistic-label">1 to 3</p>
+                    </div>
+                    <div class="statistic">
+                        <h4 class="statistic-data">0</h4>
+                        <p class="statistic-label">4 to 10</p>
+                    </div>
+                    <div class="statistic">
+                        <h4 class="statistic-data">0</h4>
+                        <p class="statistic-label">Over 10</p>
+                    </div>
+                    <div class="statistic">
+                        <h4 class="statistic-data">0</h4>
+                        <p class="statistic-label">Grade</p>
+                    </div>
+                </div>
+
+                <div class="centered">
+                    <div class="text-box-info heading gap centered" style="--amount: 0.8em">
+                        Your overall statistics
+                    </div>
+                </div>
+                <hr class="hr-stats gap" style="--amount: 0.2em">
+
+                <div class="stats-grid stats-grid-performance gap" style="--amount: 0.55em" data-statistics-second>
+                    <div class="statistic">
+                        <h4 class="statistic-data">0</h4>
+                        <p class="statistic-label">Days played</p>
+                    </div>
+                    <div class="statistic">
+                        <h4 class="statistic-data">0</h4>
+                        <p class="statistic-label">Games played</p>
+                    </div>
+                    <div class="statistic">
+                        <h4 class="statistic-data">0%</h4>
+                        <p class="statistic-label">Win %</p>
+                    </div>
+                </div>
+
+                <hr class="hr-stats gap" style="--amount: 0.8em">
+
+                <div class="centered">
+                    <div class="text-box-info heading gap centered" style="--amount: 0.35em">
+                        Answer Distribution
+                    </div>
+                </div>
+
+                <div class="centered">
+                    <div class="stat-bar-grid stats-distribution-grid">
+                        <div class="box left stats-distribution-row">
+                            <div class="text-stats-guess one">Correct</div>
+                            <div class="stat-bar one" style="--width: 10em">0</div>
+                        </div>
+                        <div class="box left stats-distribution-row">
+                            <div class="text-stats-guess two">Within 1 to 3</div>
+                            <div class="stat-bar two" style="--width: 1em">0</div>
+                        </div>
+                        <div class="box left stats-distribution-row">
+                            <div class="text-stats-guess three">Within 4 to 10</div>
+                            <div class="stat-bar three" style="--width: 1em">0</div>
+                        </div>
+                        <div class="box left stats-distribution-row">
+                            <div class="text-stats-guess four">Over 10</div>
+                            <div class="stat-bar four" style="--width: 1em">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="centered gap" style="--amount: 0.85em">
+                    <button class="button stats selected share" onclick="pressShare()" data-share-button>
+                        <div>Share</div>
+                    </button>
+                </div>
+                <div class="centered gap" style="--amount: 0.2em">
+                    <button class="clear-puzzle-data-button" onclick="clearPuzzleData()">
+                        Clear my puzzle data
+                    </button>
+                </div>
+            </div>
+
+            <div class="overlay" data-stats-overlay data-overlay-rankings>
+                <div class="centered">
+                    <div class="text-box-info gap centered" style="--amount: 0.85em" data-rank-message>
+                        You rank #342 out of 2,013 players
+                    </div>
+                </div>
+                <div class="centered">
+                    <div class="text-box-info small gap centered" style="--amount: 0.2em">
+                        Based on time taken and mistakes made
+                    </div>
+                </div>
+                <hr class="hr-stats gap" style="--amount: 0.5em">
+
+                <div class="stats-cumulative-entry">
+                    <div class="stats-cumulative-number">1</div>
+                    <div class="stats-cumulative-name">Namehere</div>
+                    <div class="stats-cumulative-percent">100%</div>
+                </div>
+                <hr class="hr-stats gap" style="--amount: 0.18em">
+                <div class="stats-cumulative-entry">
+                    <div class="stats-cumulative-number">2</div>
+                    <div class="stats-cumulative-name">Namehere</div>
+                    <div class="stats-cumulative-percent">100%</div>
+                </div>
+                <hr class="hr-stats gap" style="--amount: 0.18em">
+                <div class="stats-cumulative-entry">
+                    <div class="stats-cumulative-number">3</div>
+                    <div class="stats-cumulative-name">Namehere</div>
+                    <div class="stats-cumulative-percent">100%</div>
+                </div>
+                <hr class="hr-stats gap" style="--amount: 0.18em">
+                <div class="stats-cumulative-entry">
+                    <div class="stats-cumulative-number">4</div>
+                    <div class="stats-cumulative-name">Namehere</div>
+                    <div class="stats-cumulative-percent">100%</div>
+                </div>
+                <hr class="hr-stats gap" style="--amount: 0.18em">
+                <div class="stats-cumulative-entry">
+                    <div class="stats-cumulative-number">5</div>
+                    <div class="stats-cumulative-name">Namehere</div>
+                    <div class="stats-cumulative-percent">100%</div>
+                </div>
+                <hr class="hr-stats gap" style="--amount: 0.18em">
+                <div class="stats-cumulative-entry">
+                    <div class="stats-cumulative-number">342</div>
+                    <div class="stats-cumulative-name">You</div>
+                    <div class="stats-cumulative-percent">80%</div>
+                </div>
+
+                <div class="centered">
+                    <div class="text-box-info performance heading gap centered" style="--amount: 0.7em">
+                        Your Performance percentile
+                    </div>
+                </div>
+                <div class="centered">
+                    <div class="text-box-info small gap centered" style="--amount: 0.05em">
+                        Last 20 plays
+                    </div>
+                </div>
+
+                <div class="stats-percentile-graph gap" style="--amount: 0.7em">
+                    <div class="stats-percentile-label top">100%</div>
+                    <div class="stats-percentile-label middle">50%</div>
+                    <div class="stats-percentile-label bottom">0%</div>
+                    <div class="stats-percentile-chart">
+                        <div class="stats-percentile-guide top"></div>
+                        <div class="stats-percentile-guide middle"></div>
+                        <div class="stats-percentile-guide bottom"></div>
+                        <svg class="stats-percentile-svg" viewBox="0 0 320 120" preserveAspectRatio="none" data-percentile-chart>
+                            <polyline points="0,95 16,103 32,104 48,90 64,97 80,96 96,94 112,92 128,72 144,92 160,104 176,108 192,105 208,98 224,94 240,90 256,82 272,54 288,42 304,50 320,44" />
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="centered gap" style="--amount: 0.8em">
+                    <button class="button stats selected share" onclick="pressShare()">
+                        <div>Share</div>
+                    </button>
+                </div>
+                <div class="centered gap" style="--amount: 0.2em">
+                    <button class="clear-puzzle-data-button" onclick="clearPuzzleData()">
+                        Clear my puzzle data
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="welcome" class="page">
+        <div class="centered gap" style="--amount: 2em">
+            <img src="resources/Uimhir_vertical.svg" class="welcome-header" alt="">
+        </div>
+        <div class="text-welcome-title gap centered" style="--amount: 3em" data-welcome-header>
+            None
+        </div>
+        <div class="text-box-welcome long gap centered" style="--amount: 0.5em" data-welcome-message>
+            None
+        </div>
+        <div class="centered gap" style="--amount: 14em">
+            <button class="button welcome" onclick="showPage('game')" data-welcome-button>
+                None
+            </button>
+        </div>
+        <div class="text-welcome-date gap centered" style="--amount: 1.25em" data-welcome-date>
+            None
+        </div>
+        <div class="text-welcome-date centered gap" data-welcome-number style="--amount: .25em">
+            None
+        </div>
+    </div>
+</body>
+</html>

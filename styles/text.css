@@ -1,0 +1,146 @@
+.text-game-timer {
+    padding-left: 0.6em;
+}
+
+.text-game-heading {
+    font-size: 0.8em;
+    font-weight: bold;
+}
+.text-game-sums-heading {
+    font-size: 0.8em;
+    font-weight: normal;
+}
+
+.text-game-small {
+    font-size: 1.2em;
+}
+
+.text-game-hint {
+    width: 20em;
+    height: 2em;
+    line-height: 0.85em;
+    font-style:  italic;
+    font-size: 0.8em;
+}
+
+.text-game-hint.hidden {
+    visibility: hidden;
+}
+
+.text-game {
+    font-weight: bold;
+}
+
+.text-game-number {
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.text-game-letters {
+    font-size: .8em;
+}
+
+.text-game-answer {
+    color: var(--answer-color);
+    font-size: .8em;
+}
+
+.text-game-solution {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: var(--answer-color);
+}
+
+.text-game-target {
+    font-size: 1.4em;
+    font-weight: bold;
+    color: black;
+}
+
+.text-game-answer {
+    font-size: 1.4em;
+    font-weight: bold;
+}
+
+.text-game-answer-small {
+    font-size: 0.8em;
+    font-weight: bold;
+    color: var(--answer-color);
+}
+
+.text-game-popup {
+    font-size: 0.8em;
+    font-weight: bold;
+    color: black;
+    text-align: center;
+    min-height: 1em;
+}
+
+.text-game-answer.win {
+    color: var(--change-color);
+}
+
+.text-info-title {
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+.text-info-heading {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.text-stats-heading {
+    font-weight: bold;
+    font-size: 0.8em;
+    padding-left: 1.5em;
+}
+
+.text-stats-heading-2 {
+    font-size: 0.8em;
+}
+
+.text-stats-grade {
+    font-weight: bold;
+}
+
+.text-stats-link {
+    font-size: 0.6em;
+    color: black;
+}
+
+.text-welcome-title {
+    font-weight: bolder;
+    font-size: 1.2em;
+}
+
+.text-welcome-subtitle {
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+.text-welcome-date {
+    font-weight: bold;
+    font-size: 0.8em;
+}
+
+.text-welcome-puzzle {
+    font-size: 0.8em;
+}
+
+.text-stats-guess {
+    font-size: 0.6em;
+    margin-bottom: -0.5em;
+}
+.text-stats-guess.one {
+    margin-right: 6em;
+}
+.text-stats-guess.two {
+    margin-right: 4em;
+}
+.text-stats-guess.three {
+    margin-right: 3.34em;
+}
+.text-stats-guess.four {
+    margin-right: 6.2em;
+}
