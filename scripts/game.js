@@ -88,6 +88,8 @@ let currentTimerMax = 0
 let popupTextTimeoutId = null
 let currentSolutionInfo = ""
 let lastGameplayPopupKey = ""
+let hasNoExactNonDecimalSolution = false
+let latestSolutionRequestId = 0
 
 function setPopupText(message, duration = null) {
     if (!popupTextElement) return
@@ -234,14 +236,15 @@ function openGame() {
         if (isTimerEnabled) {
             unpauseTimer()
         } else {
-            // Returning to a previously opened puzzle should show submitted state.
-            if (activeGame.isComplete === false) {
-                activeGame.isComplete = true;
-                storeGameStateData()
+            if (activeGame.isComplete) {
+                // Keep submitted games in review mode with Next/Stats actions.
+                updateTimerDisplay(false)
+                stopInteraction()
+            } else {
+                // Resume unfinished games in playable mode.
+                enableTimerDisplay()
+                startInteraction()
             }
-
-            updateTimerDisplay(false)
-            stopInteraction()
         }
     }
 
@@ -467,19 +470,102 @@ async function loadPuzzle(index) {
 
 async function calculateSolution(numbers) {
     const solutionSums = solutionSumParent.querySelectorAll('.sum')
-    findClosestSolution(numbers).then((solution) => {
-        solutionSums.forEach((sum, i) => {
-            if (solution.sums.length > i) {
-                const currentSum = solution.sums[i]
+    const requestId = ++latestSolutionRequestId
+    const sourceNumbers = numbers.map((value) => Number(value))
 
-                sum.textContent = currentSum[0] + " " + currentSum[1] + " " + currentSum[2] + " " + currentSum[3] + " " + currentSum[4]
-            } else {
-                sum.textContent = ""
-            }
+    function renderSolutionLines(solution, isValidChain) {
+        solutionSums.forEach((sum) => {
+            sum.textContent = ""
         })
+
+        if (solutionSums.length === 0) return
+
+        const targetHeading = document.createElement('span')
+        targetHeading.classList.add('text-game-sums-heading')
+        targetHeading.textContent = "Target: " + solution.target
+        solutionSums[0].append(targetHeading)
+
+        if (!isValidChain) {
+            if (solution.closestSolution != null && solutionSums.length > 1) {
+                solutionSums[1].textContent = "Closest value: " + solution.closestSolution
+            }
+            return
+        }
+
+        const maxSequenceLines = Math.max(0, solutionSums.length - 1)
+        for (let i = 0; i < maxSequenceLines; i++) {
+            if (solution.sums.length <= i) break
+
+            const currentSum = solution.sums[i]
+            solutionSums[i + 1].textContent = currentSum[0] + " " + currentSum[1] + " " + currentSum[2] + " " + currentSum[3] + " " + currentSum[4]
+        }
+    }
+
+    findClosestSolution(sourceNumbers).then((solution) => {
+        if (requestId !== latestSolutionRequestId) return
+
+        if (!isValidSolutionChainForNumbers(sourceNumbers, solution)) {
+            renderSolutionLines(solution, false)
+
+            hasNoExactNonDecimalSolution = true
+            updateSolutionHeaderText()
+            return
+        }
+
+        const hasExact = Number(solution.closestSolution) === Number(solution.target)
+        const usesDecimalStep = solution.sums.some(step => !Number.isInteger(Number(step[4])))
+
+        hasNoExactNonDecimalSolution = !hasExact || usesDecimalStep
+
+        renderSolutionLines(solution, true)
 
         updateSolutionHeaderText()
     })
+}
+
+function isValidSolutionChainForNumbers(numbers, solution) {
+    if (!Array.isArray(numbers) || numbers.length < 2) return false
+    if (!solution || !Array.isArray(solution.sums)) return false
+
+    const pool = numbers.slice(1).map((value) => Number(value))
+
+    function popFromPool(value) {
+        const epsilon = 0.0000001
+        const index = pool.findIndex((candidate) => Math.abs(candidate - value) < epsilon)
+        if (index < 0) return false
+
+        pool.splice(index, 1)
+        return true
+    }
+
+    for (const step of solution.sums) {
+        if (!Array.isArray(step) || step.length < 5) return false
+
+        const left = Number(step[0])
+        const operation = step[1]
+        const right = Number(step[2])
+        const equalsSign = step[3]
+        const result = Number(step[4])
+
+        if (!Number.isFinite(left) || !Number.isFinite(right) || !Number.isFinite(result)) return false
+        if (equalsSign !== '=') return false
+
+        if (!popFromPool(left)) return false
+        if (!popFromPool(right)) return false
+
+        const expectedResult = Number(calculateResult(left, operation, right))
+        const epsilon = 0.0000001
+        if (!Number.isFinite(expectedResult) || Math.abs(expectedResult - result) > epsilon) return false
+
+        pool.push(result)
+    }
+
+    if (solution.closestSolution == null) return true
+
+    const closest = Number(solution.closestSolution)
+    if (!Number.isFinite(closest)) return false
+
+    return pool.some((value) => Math.abs(value - closest) < 0.0000001)
 }
 
 function generateNumbers(large) {
@@ -649,18 +735,21 @@ function updateCurrentAnswer() {
 function updateSolutionHeaderText() {
     var solutionInfo = "Closest Solution"
 
-    var distance = activeGame.distance;
-    if (distance === null) distance = 11;
-    console.log("Distance was: " + distance)
-
-    if (distance === 0) {
-
-    } else if (distance <= 3) {
-        solutionInfo = "So close!! Here is the solution"
-    } else if (distance <= 10) {
-        solutionInfo = "Not bad. Here is the solution"
+    if (hasNoExactNonDecimalSolution) {
+        solutionInfo = "There is no solution. This is the closest I could get!"
     } else {
-        solutionInfo = "The numbers didn't suit you! Solution below"
+        var distance = activeGame.distance;
+        if (distance === null) distance = 11;
+
+        if (distance === 0) {
+            // keep default text
+        } else if (distance <= 3) {
+            solutionInfo = "So close!! Here is the solution"
+        } else if (distance <= 10) {
+            solutionInfo = "Not bad. Here is the solution"
+        } else {
+            solutionInfo = "The numbers didn't suit you! Solution below"
+        }
     }
 
     currentSolutionInfo = solutionInfo
@@ -1165,100 +1254,140 @@ function shakeKey(key) {
 }
 
 async function findClosestSolution(numbers) {
-    const target = numbers[0]; // The first number is the target
-    let candidates = numbers.slice(1); // Remaining 6 numbers
-    let closestSolution = null;
-    let closestDifference = Infinity;
-    let bestSums = [];
-    const MAX_SUMS = 4; // Limit to 4 sums
+    const target = Number(numbers[0]);
+    const initialPool = numbers.slice(1).map((n, i) => ({
+        id: "n" + i,
+        value: Number(n),
+        from: null
+    }));
+
+    const MAX_SUMS = 4;
+    let bestNode = null;
+    let bestDiff = Infinity;
+    let bestSteps = Infinity;
+    const seen = new Map();
+
+    function toNumber(value) {
+        return Number.isInteger(value) ? value : Number(value.toFixed(2));
+    }
 
     function applyOperation(a, op, b) {
         let result = null;
-        switch (op) {
-            case '+':
-                result = a + b;
-                break;
-            case '-':
-                result = a - b;
-                break;
-            case 'x':
-                result = a * b;
-                break;
-            case '÷':
-                result = (b !== 0) ? a / b : null;
-                break;
-            default:
-                result = null;
+
+        if (op === "+") result = a + b;
+        else if (op === "-") result = a - b;
+        else if (op === "x") result = a * b;
+        else if (op === "÷") {
+            if (b === 0) return null;
+            result = a / b;
         }
 
-        if (result === null) return null;
-        return (Number.isInteger(result)) ? result : parseFloat(result).toFixed(2);
+        if (result == null || !Number.isFinite(result)) return null;
+        return toNumber(result);
     }
 
-    function calculateSums(nums, history = [], depth = 0, results = []) {
-        // If we've reached the maximum number of sums, stop recursion
-        if (depth >= MAX_SUMS) {
-            if (nums.length === 1) {
-                let result = nums[0];
-                let diff = Math.abs(result - target);
-                if (diff < closestDifference) {
-                    closestDifference = diff;
-                    closestSolution = result;
-                    bestSums = history;
+    function getStepCount(node) {
+        if (!node || !node.from) return 0;
+
+        const leftSteps = getStepCount(node.from.left);
+        const rightSteps = getStepCount(node.from.right);
+        return 1 + Math.max(leftSteps, rightSteps);
+    }
+
+    function updateBestNode(node) {
+        const diff = Math.abs(node.value - target);
+        const steps = getStepCount(node);
+
+        const isBetter =
+            diff < bestDiff ||
+            (diff === bestDiff && steps < bestSteps) ||
+            (diff === bestDiff && steps === bestSteps && Number.isInteger(node.value));
+
+        if (!isBetter) return;
+
+        bestDiff = diff;
+        bestSteps = steps;
+        bestNode = node;
+    }
+
+    function getStateKey(pool, depth) {
+        const values = pool.map((node) => toNumber(node.value)).sort((a, b) => a - b);
+        return depth + "|" + values.join(",");
+    }
+
+    function search(pool, depth) {
+        pool.forEach((node) => {
+            updateBestNode(node);
+        });
+
+        if (depth >= MAX_SUMS) return;
+        if (pool.length < 2) return;
+
+        const stateKey = getStateKey(pool, depth);
+        const seenDepth = seen.get(stateKey);
+        if (seenDepth != null && seenDepth <= depth) return;
+        seen.set(stateKey, depth);
+
+        for (let i = 0; i < pool.length; i++) {
+            for (let j = i + 1; j < pool.length; j++) {
+                const left = pool[i];
+                const right = pool[j];
+                const remaining = pool.filter((_, idx) => idx !== i && idx !== j);
+
+                const operationVariants = [
+                    { leftNode: left, op: "+", rightNode: right },
+                    { leftNode: left, op: "x", rightNode: right },
+                    { leftNode: left, op: "-", rightNode: right },
+                    { leftNode: right, op: "-", rightNode: left },
+                    { leftNode: left, op: "÷", rightNode: right },
+                    { leftNode: right, op: "÷", rightNode: left }
+                ];
+
+                for (const variant of operationVariants) {
+                    const result = applyOperation(variant.leftNode.value, variant.op, variant.rightNode.value);
+                    if (result === null) continue;
+
+                    // left/right are consumed once in this branch, result is a new number.
+                    const resultNode = {
+                        id: "r_" + depth + "_" + i + "_" + j + "_" + variant.op,
+                        value: result,
+                        from: {
+                            left: variant.leftNode,
+                            op: variant.op,
+                            right: variant.rightNode,
+                            result
+                        }
+                    };
+
+                    search([resultNode, ...remaining], depth + 1);
                 }
             }
-            return;
-        }
-
-        // Try every pair of numbers with every operation
-        for (let i = 0; i < nums.length; i++) {
-            for (let j = i + 1; j < nums.length; j++) {
-                let num1 = nums[i], num2 = nums[j];
-
-                // Remove num1 and num2 from nums for the recursive call
-                let remaining = nums.filter((_, idx) => idx !== i && idx !== j);
-
-                ['+', '-', 'x', '÷'].forEach(op => {
-                    let result = applyOperation(num1, op, num2);
-                    if (result === null) return; // Skip invalid operations (e.g., division by zero)
-
-                    let newHistory = [...history, [num1, op, num2, '=', result]];
-
-                    // Compare current result with closestDifference
-                    let diff = Math.abs(result - target);
-                    if (diff < closestDifference) {
-                        closestDifference = diff;
-                        closestSolution = result;
-                        bestSums = newHistory;
-                    }
-
-                    // Recur with the result added as a new number, and increase depth
-                    calculateSums([result, ...remaining], newHistory, depth + 1, [...results, result]);
-
-                    // Recur ignoring the result, keeping the unused numbers, but also increasing depth
-                    calculateSums(remaining, history, depth + 1, results);
-                });
-            }
-        }
-
-        // Also consider previously generated results at the current depth
-        for (let res of results) {
-            calculateSums([res, ...nums], history, depth + 1, results);
         }
     }
 
-    // Start the recursive search
-    calculateSums(candidates);
+    function buildSteps(node, out) {
+        if (!node || !node.from) return;
 
-    // Filter for only the valid sums
-    bestSums = bestSums.filter(([, , , , result]) =>
-        result === closestSolution || bestSums.some((sum) => sum[0] === result || sum[2] === result)
-    );
+        buildSteps(node.from.left, out);
+        buildSteps(node.from.right, out);
 
-    // Return the closest solution and the steps (sums)
+        out.push([
+            node.from.left.value,
+            node.from.op,
+            node.from.right.value,
+            "=",
+            node.from.result
+        ]);
+    }
+
+    search(initialPool, 0);
+
+    const sums = [];
+    buildSteps(bestNode, sums);
+
     return {
-        closestSolution: closestSolution,
-        sums: bestSums,
-        target: target
+        closestSolution: bestNode ? bestNode.value : null,
+        sums: sums.slice(0, MAX_SUMS),
+        target
     };
 }

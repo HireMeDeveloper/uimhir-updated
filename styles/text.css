@@ -11,6 +11,11 @@
     font-weight: normal;
 }
 
+/* Compensate for .sums-box scale so injected Target heading matches Your Sums size. */
+.sums-box .text-game-sums-heading {
+    font-size: 1.0667em;
+}
+
 .text-game-small {
     font-size: 1.2em;
 }
