@@ -1,5 +1,8 @@
 const DATE_OF_FIRST_PUZZLE = new Date(2024, 6, 25)
 const ALLOW_MOBILE_SHARE = true; 
+const DEBUG_MODE = false;
+
+window.DEBUG_MODE = DEBUG_MODE;
 
 let targetGameNumber = 0
 
