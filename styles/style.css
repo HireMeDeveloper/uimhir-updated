@@ -558,3 +558,231 @@ button.hint.changed {
     opacity: 0.45;
     cursor: not-allowed;
 }
+
+#info,
+.scoring-screen {
+    --page-content-width: 19rem;
+    --scoring-badge-bg: #6f4aa2;
+    --scoring-badge-fg: #ffffff;
+}
+
+#info.page {
+    min-height: calc(100dvh - 1.5em);
+    padding-bottom: 2.25em;
+}
+
+.info-divider {
+    width: var(--page-content-width);
+    margin-left: auto;
+    margin-right: auto;
+    border: none;
+    border-top: 1px solid #7d7d7d;
+}
+
+.info-score-factor-row {
+    width: var(--page-content-width);
+    display: grid;
+    grid-template-columns: 1.5em 1fr;
+    align-items: center;
+    column-gap: 0.45em;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.info-score-factor-icon {
+    width: 1.25em;
+    height: 1.25em;
+    border-radius: 50%;
+    background: var(--scoring-badge-bg);
+    color: var(--scoring-badge-fg);
+    display: grid;
+    place-items: center;
+    justify-self: center;
+    align-self: center;
+    text-align: center;
+    line-height: 1;
+    padding: 0;
+    font-size: 0.55em;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    font-variant-numeric: tabular-nums;
+}
+
+.info-score-factor-text {
+    width: 100%;
+}
+
+.info-note-box {
+    width: var(--page-content-width);
+    margin-left: auto;
+    margin-right: auto;
+    background: #efe9f8;
+    border-radius: 0.35em;
+    padding: 0.65em 0.8em;
+    font-size: 0.53em;
+    color: #2f2f2f;
+}
+
+#scoring.page {
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
+    min-height: calc(100dvh - 1.5em);
+}
+
+.scoring-screen {
+    width: 19em;
+    margin: 0 auto;
+    padding-bottom: 2.25em;
+}
+
+.scoring-section {
+    width: var(--page-content-width);
+    margin-left: auto;
+    margin-right: auto;
+    display: grid;
+    grid-template-columns: 1.5em 1fr;
+    align-items: center;
+    column-gap: 0.4em;
+}
+
+.scoring-section-number {
+    width: 1.2em;
+    height: 1.2em;
+    border-radius: 50%;
+    background: var(--scoring-badge-bg);
+    color: var(--scoring-badge-fg);
+    display: grid;
+    place-items: center;
+    justify-self: center;
+    align-self: center;
+    text-align: center;
+    line-height: 1;
+    padding: 0;
+    font-size: 0.55em;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    font-variant-numeric: tabular-nums;
+}
+
+.scoring-grid {
+    width: var(--page-content-width);
+    margin-left: auto;
+    margin-right: auto;
+    display: grid;
+    row-gap: 0.35em;
+    background: #efe9f8;
+    border-radius: 0.35em;
+    padding: 0.6em 0.8em;
+}
+
+.scoring-chart-head {
+    display: grid;
+    grid-template-columns: 1fr 2.5em;
+    column-gap: 0.45em;
+    align-items: center;
+}
+
+.scoring-chart-list {
+    display: grid;
+    row-gap: 0.25em;
+}
+
+.scoring-grid-half-score {
+    text-align: right;
+}
+
+.scoring-chart-row {
+    display: grid;
+    grid-template-columns: 1fr 2.5em;
+    align-items: center;
+    column-gap: 0.45em;
+    border-radius: 0.2em;
+    padding: 0.1em 0.25em;
+}
+
+.scoring-chart-list .scoring-chart-row:nth-child(odd) {
+    background: rgba(255, 255, 255, 0.24);
+}
+
+.scoring-chart-list .scoring-chart-row:nth-child(even) {
+    background: transparent;
+}
+
+.scoring-distance-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+}
+
+.score-dot {
+    width: 0.6em;
+    height: 0.6em;
+    border-radius: 50%;
+    display: inline-block;
+    flex: 0 0 auto;
+}
+
+.dot-violet {
+    background: #009982;
+}
+
+.dot-violet-soft {
+    background: #39b49f;
+}
+
+.dot-violet-light {
+    background: #73cfc0;
+}
+
+.dot-violet-pale {
+    background: #8b69b8;
+}
+
+.dot-teal {
+    background: #a98bcb;
+}
+
+.dot-teal-soft {
+    background: #c3acd9;
+}
+
+.dot-teal-light {
+    background: #b3bcc0;
+}
+
+.dot-grey {
+    background: #8c979c;
+}
+
+.scoring-example {
+    width: var(--page-content-width);
+    margin-left: auto;
+    margin-right: auto;
+    background: #edf8f5;
+    border-radius: 0.35em;
+    padding: 0.65em 0.8em;
+}
+
+.scoring-example-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    column-gap: 0.55em;
+}
+
+.scoring-example-left {
+    display: grid;
+    row-gap: 0.15em;
+    padding-right: 0.35em;
+}
+
+.scoring-example-right {
+    border-left: 1px solid #b7d8cf;
+    padding-left: 0.55em;
+    text-align: center;
+}
+
+.scoring-example-label {
+    font-size: 0.9em;
+}

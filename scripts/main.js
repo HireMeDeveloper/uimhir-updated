@@ -87,7 +87,7 @@ function showPage(pageId, oldPage = null) {
         }
     }
 
-    if (pageId != "welcome" && pageId != "game" && pageId != "info" && pageId != "stats") {
+    if (pageId != "welcome" && pageId != "game" && pageId != "info" && pageId != "scoring" && pageId != "stats") {
         console.log("Invalid page: " + pageId + ". Openning 'game' page.")
         pageId = "game"
     }
@@ -113,6 +113,9 @@ function showPage(pageId, oldPage = null) {
     } else if (pageId === "info") {
         updateBodyColor(false)
         updateInfoPage()
+        pauseTimer()
+    } else if (pageId === "scoring") {
+        updateBodyColor(false)
         pauseTimer()
     }
 

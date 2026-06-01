@@ -2,10 +2,19 @@
     padding-left: 0.6em;
 }
 
+.text-game-solution-target {
+    font-weight: 700;
+}
+
+.sums-box .text-game-solution-target {
+    font-weight: 700;
+}
+
 .text-game-heading {
     font-size: 0.8em;
     font-weight: bold;
 }
+
 .text-game-sums-heading {
     font-size: 0.8em;
     font-weight: normal;
@@ -148,4 +157,49 @@
 }
 .text-stats-guess.four {
     margin-right: 6.2em;
+}
+
+.info-scoring-link {
+    width: fit-content;
+    display: inline-block;
+    font-size: 0.55em;
+    color: #1f1f1f;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.scoring-section-title {
+    font-size: 0.72em;
+    font-weight: bold;
+}
+
+.scoring-grid {
+    font-size: 0.52em;
+}
+
+.scoring-grid-head {
+    font-weight: bold;
+    color: #6f4aa2;
+}
+
+.scoring-muted {
+    font-size: 0.53em;
+}
+
+.info-note-box-label {
+    color: #6f4aa2;
+    font-size: inherit;
+    font-weight: bold;
+    margin-bottom: 0.25em;
+}
+
+.scoring-example {
+    font-size: 0.57em;
+}
+
+.scoring-example-total {
+    font-size: 1.55em;
+    font-weight: bold;
+    color: #009982;
+    line-height: 1;
 }

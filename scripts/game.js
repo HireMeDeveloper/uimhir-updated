@@ -315,8 +315,10 @@ function timerEnd() {
     timerStarted = false
 
     stopInteraction()
+    finalizeCurrentPuzzleDistance()
     activeGame.isComplete = true;
     storeGameStateData()
+    updateCumulativeData()
 
     updateTimerDisplay(false)
 
@@ -473,6 +475,37 @@ async function calculateSolution(numbers) {
     const requestId = ++latestSolutionRequestId
     const sourceNumbers = numbers.map((value) => Number(value))
 
+    function buildFallbackSolution(values) {
+        const target = Number(values[0])
+        const candidates = values.slice(1).filter((value) => Number.isFinite(value))
+
+        if (candidates.length === 0) {
+            return {
+                target,
+                closestSolution: null,
+                sums: []
+            }
+        }
+
+        let closest = candidates[0]
+        let closestDistance = Math.abs(target - closest)
+
+        for (let i = 1; i < candidates.length; i++) {
+            const value = candidates[i]
+            const distance = Math.abs(target - value)
+            if (distance < closestDistance) {
+                closest = value
+                closestDistance = distance
+            }
+        }
+
+        return {
+            target,
+            closestSolution: closest,
+            sums: []
+        }
+    }
+
     function renderSolutionLines(solution, isValidChain) {
         solutionSums.forEach((sum) => {
             sum.textContent = ""
@@ -481,7 +514,7 @@ async function calculateSolution(numbers) {
         if (solutionSums.length === 0) return
 
         const targetHeading = document.createElement('span')
-        targetHeading.classList.add('text-game-sums-heading')
+        targetHeading.classList.add('text-game-sums-heading', 'text-game-solution-target')
         targetHeading.textContent = "Target: " + solution.target
         solutionSums[0].append(targetHeading)
 
@@ -501,14 +534,23 @@ async function calculateSolution(numbers) {
         }
     }
 
+    function renderFallbackSolution() {
+        const fallbackSolution = buildFallbackSolution(sourceNumbers)
+        renderSolutionLines(fallbackSolution, false)
+        hasNoExactNonDecimalSolution = true
+        updateSolutionHeaderText()
+    }
+
     findClosestSolution(sourceNumbers).then((solution) => {
         if (requestId !== latestSolutionRequestId) return
 
-        if (!isValidSolutionChainForNumbers(sourceNumbers, solution)) {
-            renderSolutionLines(solution, false)
+        if (solution == null || solution.closestSolution == null) {
+            renderFallbackSolution()
+            return
+        }
 
-            hasNoExactNonDecimalSolution = true
-            updateSolutionHeaderText()
+        if (!isValidSolutionChainForNumbers(sourceNumbers, solution)) {
+            renderFallbackSolution()
             return
         }
 
@@ -520,6 +562,9 @@ async function calculateSolution(numbers) {
         renderSolutionLines(solution, true)
 
         updateSolutionHeaderText()
+    }).catch(() => {
+        if (requestId !== latestSolutionRequestId) return
+        renderFallbackSolution()
     })
 }
 
@@ -759,6 +804,37 @@ function updateSolutionHeaderText() {
     }
 }
 
+function getFallbackDistance() {
+    // Distance > 10 maps to the lowest score bracket.
+    return 11
+}
+
+function normalizeDistance(distance) {
+    const numericDistance = Number(distance)
+    if (!Number.isFinite(numericDistance)) return getFallbackDistance()
+
+    return Math.abs(parseFloat(numericDistance.toFixed(2)))
+}
+
+function finalizeCurrentPuzzleDistance() {
+    const currentAnswer = activeGame.currentAnswer
+    if (currentAnswer == null || currentAnswer === "") {
+        activeGame.distance = getFallbackDistance()
+        return activeGame.distance
+    }
+
+    const currentTargetValue = Number(activeGame.numbers[0])
+    const currentAnswerValue = Number(currentAnswer)
+
+    if (!Number.isFinite(currentTargetValue) || !Number.isFinite(currentAnswerValue)) {
+        activeGame.distance = getFallbackDistance()
+        return activeGame.distance
+    }
+
+    activeGame.distance = normalizeDistance(currentTargetValue - currentAnswerValue)
+    return activeGame.distance
+}
+
 function checkCurrentAnswer() {
     const currentAnswer = activeGame.currentAnswer
     if (currentAnswer === null) {
@@ -770,7 +846,7 @@ function checkCurrentAnswer() {
     }
 
     const currentTarget = activeGame.numbers[0]
-    const difference = Math.abs(parseFloat(currentTarget) - parseFloat(currentAnswer))
+    const difference = normalizeDistance(parseFloat(currentTarget) - parseFloat(currentAnswer))
     console.log("Current answer of: " + currentAnswer + " with target of: " + currentTarget + " resulted in distance of: " + difference)
 
     activeGame.distance = difference;
@@ -813,9 +889,9 @@ function updateCumulativeData() {
     let grade = "N/A";
 
     gameState.games.forEach(game => {
-        if (game.wasStarted) {
+        if (game.wasStarted && game.isComplete) {
             console.log("Distance was: " + game.distance)
-            distances.push(game.distance)
+            distances.push(normalizeDistance(game.distance))
         }
     })
 
@@ -1102,8 +1178,11 @@ function playNext() {
 function submitCurrentPuzzle() {
     if (canInteract === false) return;
 
+    finalizeCurrentPuzzleDistance()
+
     activeGame.isComplete = true;
     storeGameStateData()
+    updateCumulativeData()
 
     updateTimerDisplay(false)
     stopInteraction()
@@ -1283,6 +1362,7 @@ async function findClosestSolution(numbers) {
         }
 
         if (result == null || !Number.isFinite(result)) return null;
+        if (result < 0) return null;
         return toNumber(result);
     }
 

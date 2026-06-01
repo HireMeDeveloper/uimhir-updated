@@ -45,9 +45,10 @@
         <div class="centered gap" style="--amount: 1em; gap: 0.8em;">
             <canvas id="targetCanvas" width="400" height="400" style="width: 6em; height: 6em;"></canvas>
             <canvas class="" id="circleCanvas" width="400" height="400" style="width: 6em; height: 6em;"></canvas>
-            <div class="no-display solution" style="height: 6em; width: 18em;" data-answer-element>
+            <div class="no-display solution" style="height: 8.2em; width: 18em;" data-answer-element>
                 <div class="centered">
                     <div class="sums-box answer inline" data-solution-sums>
+                        <div class="sum">175 + 20 = 195</div>
                         <div class="sum">175 + 20 = 195</div>
                         <div class="sum">175 + 20 = 195</div>
                         <div class="sum">175 + 20 = 195</div>
@@ -150,90 +151,156 @@
             </div>
             <div class="underline"></div>
         </div>
-        <div class="text-info-title gap" style="--amount: 0.8em">
+        <div class="text-info-title gap" style="--amount: 0.95em">
             How To Play
         </div>
-        <div class="">
-            <div class="text-box-info heading gap" style="--amount: 1.1em">
+        <div>
+            <div class="text-box-info heading gap" style="--amount: 1.2em">
                 Goal
             </div>
         </div>
-        <div class="">
-            <div class="text-box-info gap" style="--amount: 0.4em">
+        <div>
+            <div class="text-box-info gap" style="--amount: 0.5em">
                 Get as close as possible to the target number in five attempts.
             </div>
         </div>
-        <div class="gap centered" style="--amount: 0.5em">
-            <div class="text-game-heading centered">
-                Target
-            </div>
-        </div>
-        <div class="centered">
-            <div class="text-game-target" style="--color: green">421</div>
-        </div>
-        <div class="gap centered" style="--amount: .5em">
-            <div class="text-game-heading centered">
-                Your Answer
-            </div>
-        </div>
-        <div class="centered">
-            <div class="text-game-answer">420</div>
-        </div>
-        <div class="gap centered relative" style="--amount: 1em">
-            <div class="text-game-heading centered absolute">
-                Your Five Sums
-            </div>
-        </div>
-        <div class="centered" style="--amount: 1em">
-            <div class="sums-box">
-                <div class="sum">
-                    <div class="sum-number green">1</div>
-                    <div class="sum-text">100 x 4 = 400</div>
-                </div>
-                <div class="sum">
-                    <div class="sum-number green">2</div>
-                    <div class="sum-text">8 + 7 = 15</div>
-                </div>
-                <div class="sum">
-                    <div class="sum-number green" data-num>3</div>
-                    <div class="sum-text" data-sum>5 + 15 = 20</div>
-                </div>
-                <div class="sum">
-                    <div class="sum-number green">4</div>
-                    <div class="sum-text">400 + 20 = 420</div>
-                </div>
-                <div class="sum">
-                    <div class="sum-number">5</div>
-                    <div class="sum-text"></div>
-                </div>
-            </div>
-        </div>
-        <div class="">
-            <div class="text-box-info heading gap" style="--amount: 0.4em">
-                Rules
-            </div>
-        </div>
-        <div class="">
-            <div class="text-box-info gap" style="--amount: .2em">
-                Each number can be used once, including sum results. Numbers will change to green when used.
-            </div>
-        </div>
-        <div class="">
-            <div class="text-box-info heading gap" style="--amount: 0.4em">
+        <hr class="info-divider gap" style="--amount: 0.65em">
+        <div>
+            <div class="text-box-info heading gap" style="--amount: 0.6em">
                 Results
             </div>
         </div>
-        <div class="">
-            <div class="text-box-info-single gap" style="--amount: .2em">
-                After three daily rounds, your accuracy will be graded based on how close you are to each target.
-                The closer the better.
+        <div>
+            <div class="text-box-info gap" style="--amount: 0.35em">
+                Complete three daily rounds and score as close to 100% as possible.
             </div>
-            <div class="text-box-info-single gap" style="--amount: 1em">Have feedback? <a href="mailto:customerhelp@independent?subject=Uimhir%20Puzzle%20Feedback.">Email us</a>.</div>
         </div>
-        <div class="centered gap" style="--amount: 0.2em">
+        <div>
+            <div class="text-box-info heading gap" style="--amount: 0.75em">
+                Your score is based on:
+            </div>
+        </div>
+        <div class="info-score-factor-row gap" style="--amount: 0.4em">
+            <div class="info-score-factor-icon">1</div>
+            <div class="text-box-info-single info-score-factor-text">How close you get to the target number</div>
+        </div>
+        <div class="info-score-factor-row gap" style="--amount: 0.35em">
+            <div class="info-score-factor-icon">2</div>
+            <div class="text-box-info-single info-score-factor-text">How accurately you complete your sums</div>
+        </div>
+        <div class="info-note-box gap" style="--amount: 0.85em">
+            <div><strong>Exact answers score highest.</strong></div>
+            <div>Answers more than 10 away score 0%.</div>
+        </div>
+        <div>
+            <div class="text-box-info-single gap" style="--amount: 0.95em">
+                Your final daily score is the average of all three rounds.
+            </div>
+        </div>
+        <div>
+            <a class="info-scoring-link gap" style="--amount: 0.55em" onclick="showPage('scoring', 'info')">How is scoring calculated?</a>
+        </div>
+        <div class="centered gap" style="--amount: 0.35em">
             <button class="button play" data-play-button>
-                Play
+                Continue
             </button>
+        </div>
+        <div class="centered gap" style="--amount: 0.65em">
+            <div class="text-box-info-single centered">Have feedback? <a href="mailto:customerhelp@independent?subject=Uimhir%20Puzzle%20Feedback.">Email us</a>.</div>
+        </div>
+    </div>
+    <div id="scoring" class="page">
+        <div class="scoring-screen">
+            <div class="header">
+                <div>
+                    <a onclick="showPage('info', 'scoring')">
+                        <img src="resources/back-arrow.svg" class="icon back" alt="Back">
+                    </a>
+                </div>
+                <div>
+                    <img src="resources/Uimhir_horizontal.svg" class="countdown-horizontal-icon">
+                </div>
+                <div class="margin-right"></div>
+            </div>
+            <div class="underline"></div>
+            <div class="text-info-title gap" style="--amount: 0.95em">
+                How Scoring Works
+            </div>
+
+            <div class="scoring-section gap" style="--amount: 0.75em">
+                <div class="scoring-section-number">1</div>
+                <div class="scoring-section-title">Distance from target</div>
+            </div>
+            <div class="text-box-info-single scoring-muted gap" style="--amount: 0.35em">Each round is scored out of 100%.</div>
+            <div class="scoring-grid gap" style="--amount: 0.4em">
+                <div class="scoring-chart-head">
+                    <div>Distance</div>
+                    <div class="scoring-grid-half-score">Score</div>
+                </div>
+                <div class="scoring-chart-list">
+                    <div class="scoring-chart-row">
+                        <div class="scoring-distance-item"><span class="score-dot dot-violet"></span><span>Exact answer</span></div>
+                        <div class="scoring-grid-half-score">100</div>
+                    </div>
+                    <div class="scoring-chart-row">
+                        <div class="scoring-distance-item"><span class="score-dot dot-violet-soft"></span><span>1 away</span></div>
+                        <div class="scoring-grid-half-score">90</div>
+                    </div>
+                    <div class="scoring-chart-row">
+                        <div class="scoring-distance-item"><span class="score-dot dot-violet-light"></span><span>2 away</span></div>
+                        <div class="scoring-grid-half-score">85</div>
+                    </div>
+                    <div class="scoring-chart-row">
+                        <div class="scoring-distance-item"><span class="score-dot dot-violet-pale"></span><span>3 away</span></div>
+                        <div class="scoring-grid-half-score">80</div>
+                    </div>
+                    <div class="scoring-chart-row">
+                        <div class="scoring-distance-item"><span class="score-dot dot-teal"></span><span>4-5 away</span></div>
+                        <div class="scoring-grid-half-score">70</div>
+                    </div>
+                    <div class="scoring-chart-row">
+                        <div class="scoring-distance-item"><span class="score-dot dot-teal-soft"></span><span>6-7 away</span></div>
+                        <div class="scoring-grid-half-score">60</div>
+                    </div>
+                    <div class="scoring-chart-row">
+                        <div class="scoring-distance-item"><span class="score-dot dot-teal-light"></span><span>8-10 away</span></div>
+                        <div class="scoring-grid-half-score">50</div>
+                    </div>
+                    <div class="scoring-chart-row">
+                        <div class="scoring-distance-item"><span class="score-dot dot-grey"></span><span>11+ away</span></div>
+                        <div class="scoring-grid-half-score">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="scoring-section gap" style="--amount: 0.85em">
+                <div class="scoring-section-number">2</div>
+                <div class="scoring-section-title">Example</div>
+            </div>
+            <div class="scoring-example gap" style="--amount: 0.4em">
+                <div class="scoring-example-layout">
+                    <div class="scoring-example-left">
+                        <div>Target: 421</div>
+                        <div>Your answer: 420</div>
+                        <div>Distance: 1 away = 90</div>
+                    </div>
+                    <div class="scoring-example-right">
+                        <div class="scoring-example-label">Round score</div>
+                        <div class="scoring-example-total">90%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-note-box gap" style="--amount: 0.9em">
+                <div class="info-note-box-label">Important</div>
+                <div>Scores are capped between 0% and 100%. Answers more than 10 away score 0%.</div>
+            </div>
+
+            <div class="centered gap" style="--amount: 0.8em">
+                <button class="button play" onclick="showPage('info', 'scoring')">
+                    Back
+                </button>
+            </div>
         </div>
     </div>
     <div id="stats" class="page">
