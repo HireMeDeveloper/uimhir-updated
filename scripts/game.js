@@ -1,6 +1,6 @@
 let gameHasStarted = false
 let timerStarted = false
-const isTimerEnabled = false
+const isTimerEnabled = true
 
 let footerVisible = false
 
@@ -26,6 +26,7 @@ let gameState = {
             buttonsPressed: [],
             isComplete: false,
             distance: null,
+            elapsedSeconds: 0,
             wasStarted: false
         },
         {
@@ -40,6 +41,7 @@ let gameState = {
             buttonsPressed: [],
             isComplete: false,
             distance: null,
+            elapsedSeconds: 0,
             wasStarted: false
         },
         {
@@ -54,6 +56,7 @@ let gameState = {
             buttonsPressed: [],
             isComplete: false,
             distance: null,
+            elapsedSeconds: 0,
             wasStarted: false
         }
     ],
@@ -82,6 +85,9 @@ const popupTextElement = document.querySelector('[data-game-popup]')
 const targetCanvas = document.getElementById('targetCanvas');
 const canvas = document.getElementById('circleCanvas');
 const solutionSumParent = document.querySelector('[data-solution-sums]')
+const timerRow = document.querySelector('[data-timer-row]')
+const timerTimeElement = document.querySelector('[data-timer-time]')
+const timerCopyElement = document.querySelector('[data-timer-copy]')
 
 let currentTimerTime = 0
 let currentTimerMax = 0
@@ -168,6 +174,7 @@ function resetGameState() {
                 buttonsPressed: [],
                 isComplete: false,
                 distance: null,
+                elapsedSeconds: 0,
                 wasStarted: false
             },
             {
@@ -182,6 +189,7 @@ function resetGameState() {
                 buttonsPressed: [],
                 isComplete: false,
                 distance: null,
+                elapsedSeconds: 0,
                 wasStarted: false
             },
             {
@@ -196,6 +204,7 @@ function resetGameState() {
                 buttonsPressed: [],
                 isComplete: false,
                 distance: null,
+                elapsedSeconds: 0,
                 wasStarted: false
             }
         ],
@@ -252,16 +261,53 @@ function openGame() {
     gameHasStarted = true;
 }
 
-function startTimer() {
-    //console.log("Start Timer")
+const TIMER_PENALTY_BANDS = [
+    { maxSeconds: 30,       penalty: 0 },
+    { maxSeconds: 45,       penalty: -3 },
+    { maxSeconds: 59,       penalty: -4 },
+    { maxSeconds: 75,       penalty: -6 },
+    { maxSeconds: 90,       penalty: -7 },
+    { maxSeconds: 105,      penalty: -9 },
+    { maxSeconds: Infinity, penalty: -10 }
+]
 
+function getTimerPenalty(elapsedSeconds) {
+    for (const band of TIMER_PENALTY_BANDS) {
+        if (elapsedSeconds <= band.maxSeconds) return band.penalty
+    }
+    return -10
+}
+
+function getTimerPenaltyCopy(elapsedSeconds) {
+    if (elapsedSeconds <= 30)  return 'First penalty at 0:30'
+    if (elapsedSeconds <= 45)  return 'Next penalty at 0:45'
+    if (elapsedSeconds <= 59)  return 'Next penalty at 0:59'
+    if (elapsedSeconds <= 75)  return 'Next penalty at 1:15'
+    if (elapsedSeconds <= 90)  return 'Next penalty at 1:30'
+    if (elapsedSeconds <= 105) return 'Next penalty at 1:45'
+    return 'Max time penalty applied'
+}
+
+function getDistanceScore(distance) {
+    if (distance === 0)      return 100
+    if (distance <= 1)       return 90
+    if (distance <= 2)       return 85
+    if (distance <= 3)       return 80
+    if (distance <= 5)       return 70
+    if (distance <= 7)       return 60
+    if (distance <= 10)      return 50
+    return 0
+}
+// ---- End timer penalty bands ----
+
+function startTimer() {
     if (timerStarted) return
 
     startInteraction()
 
     timerStarted = true
-    let timerDuration = getTimerDuration(45)
-    updateTimer(timerDuration, timerDuration)
+    currentTimerTime = 0
+    updateTimer(0)
 
     updateCumulativeData()
 }
@@ -279,40 +325,36 @@ function pauseTimer() {
 }
 
 function unpauseTimer() {
-    if (currentTimerTime === 0) return;
     if (activeGame.isComplete == true) return;
     timerStarted = true
-
-    updateTimer(currentTimerTime, currentTimerMax)
+    updateTimer(currentTimerTime)
 }
 
-function updateTimer(totalHundredths, maxTime) {
+function updateTimer(elapsedHundredths) {
     if (timerStarted === false) return;
 
-    currentTimerTime = totalHundredths
-    currentTimerMax = maxTime
+    currentTimerTime = elapsedHundredths
 
-    let seconds = Math.floor(totalHundredths / 100);
-    let hundredths = totalHundredths % 100;
-    let formattedHundreds = (hundredths < 10) ? ((hundredths === 0) ? '00' : '0' + hundredths) : hundredths
-    let formattedTime = `00:${(seconds < 10) ? '0' + seconds : seconds}`;
+    updateTimerRow(elapsedHundredths)
 
-    drawGameCircle(totalHundredths / maxTime, formattedTime)
+    updateTimerTimoutId = setTimeout(() => {
+        updateTimer(elapsedHundredths + 1)
+    }, 10)
+}
 
-    //let timerText = document.querySelector('.text-timer')
-    //timerText.textContent = formattedTime
-
-    if (totalHundredths > 0) {
-        updateTimerTimoutId = setTimeout(() => {
-            updateTimer(totalHundredths - 1, maxTime)
-        }, 10)
-    } else {
-        timerEnd()
-    }
+function updateTimerRow(elapsedHundredths) {
+    if (!timerTimeElement || !timerCopyElement) return
+    const totalSeconds = Math.floor(elapsedHundredths / 100)
+    const minutes = Math.floor(totalSeconds / 60)
+    const secs = totalSeconds % 60
+    const formattedTime = (minutes < 10 ? '0' + minutes : minutes) + ':' + (secs < 10 ? '0' + secs : secs)
+    timerTimeElement.textContent = formattedTime
+    timerCopyElement.textContent = getTimerPenaltyCopy(totalSeconds)
 }
 
 function timerEnd() {
     timerStarted = false
+    activeGame.elapsedSeconds = Math.floor(currentTimerTime / 100)
 
     stopInteraction()
     finalizeCurrentPuzzleDistance()
@@ -330,6 +372,7 @@ function timerEnd() {
 }
 
 function updateTimerDisplay(hasWon) {
+    if (timerRow) timerRow.classList.add('no-display')
     if (hasWon) {
         targetCanvas.classList.remove('no-display')
         canvas.classList.remove('no-display')
@@ -346,6 +389,7 @@ function updateTimerDisplay(hasWon) {
 }
 
 function enableTimerDisplay() {
+    if (timerRow) timerRow.classList.remove('no-display')
     targetCanvas.classList.remove('no-display')
     canvas.classList.remove('no-display')
     answerElement.classList.add('no-display')
@@ -860,6 +904,8 @@ function checkCurrentAnswer() {
 
 function win() {
     stopTimer()
+    activeGame.elapsedSeconds = Math.floor(currentTimerTime / 100)
+    if (timerRow) timerRow.classList.add('no-display')
     drawWinCircle()
 
     answerTextElement.classList.add('win')
@@ -886,24 +932,25 @@ function findSolution() {
 
 function updateCumulativeData() {
     let distances = [];
+    let elapsedTimes = [];
     let grade = "N/A";
 
     gameState.games.forEach(game => {
         if (game.wasStarted && game.isComplete) {
             console.log("Distance was: " + game.distance)
             distances.push(normalizeDistance(game.distance))
+            elapsedTimes.push(Number.isFinite(Number(game.elapsedSeconds)) ? Math.floor(Number(game.elapsedSeconds)) : 0)
         }
     })
 
     if (distances.length > 0) {
-        const evaluatedDistances = evaluateDistances(distances)
-        grade = getGrade(
-            distances.length,
-            evaluatedDistances.zeros,
-            evaluatedDistances.threes,
-            evaluatedDistances.fours,
-            evaluatedDistances.tens
-        )
+        const roundScores = distances.map((dist, i) => {
+            const distScore = getDistanceScore(dist)
+            const timePenalty = getTimerPenalty(elapsedTimes[i] || 0)
+            return Math.max(0, Math.min(100, distScore + timePenalty))
+        })
+        const totalScore = roundScores.reduce((sum, s) => sum + s, 0)
+        grade = Math.round(totalScore / roundScores.length).toString()
     }
 
     let hasEntry = cumulativeDataHasEntry(gameState.puzzleNumber)
@@ -1177,6 +1224,9 @@ function playNext() {
 
 function submitCurrentPuzzle() {
     if (canInteract === false) return;
+
+    stopTimer()
+    activeGame.elapsedSeconds = Math.floor(currentTimerTime / 100)
 
     finalizeCurrentPuzzleDistance()
 

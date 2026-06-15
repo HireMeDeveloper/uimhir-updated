@@ -2,6 +2,18 @@
     padding-left: 0.6em;
 }
 
+.timer-time-text {
+    font-size: 1.05em;
+    font-weight: bold;
+    color: #109D89;
+}
+
+.timer-copy-text {
+    font-size: 0.58em;
+    color: #555;
+    padding-left: 1.5em;
+}
+
 .text-game-solution-target {
     font-weight: 700;
 }
