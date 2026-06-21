@@ -791,7 +791,7 @@ function updateSums() {
         }
     })
 
-    if (activeGame.sums.length > 5 && currentTimerTime > 0) {
+    if (activeGame.sums.length > 5 && currentTimerTime > 0 && activeGame.isComplete) {
         showOnlyNext()
     } else if (currentTimerTime > 0) {
         hideOnlyNext()
@@ -912,6 +912,7 @@ function win() {
 
     activeGame.isComplete = true
     storeGameStateData()
+    updateCumulativeData()
 
     stopInteraction()
 
@@ -936,7 +937,7 @@ function updateCumulativeData() {
     let grade = "N/A";
 
     gameState.games.forEach(game => {
-        if (game.wasStarted && game.isComplete) {
+        if (game.isComplete) {
             console.log("Distance was: " + game.distance)
             distances.push(normalizeDistance(game.distance))
             elapsedTimes.push(Number.isFinite(Number(game.elapsedSeconds)) ? Math.floor(Number(game.elapsedSeconds)) : 0)
@@ -961,6 +962,7 @@ function updateCumulativeData() {
         cumulativeData.push({
             number: gameState.puzzleNumber,
             distances: distances,
+            elapsedTimes: elapsedTimes,
             grade: grade
         })
 
@@ -973,6 +975,7 @@ function updateCumulativeData() {
         cumulativeData[entryIndex] = {
             number: gameState.puzzleNumber,
             distances: distances,
+            elapsedTimes: elapsedTimes,
             grade: grade
         }
 

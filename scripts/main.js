@@ -263,92 +263,56 @@ function updateInfoPage() {
 }
 
 function processStats(cumulativeState) {
-    let overallGrade = null
-
     let result = {
         today: {
-            streak: 0,
-            gamesPlayed: 0,
-            wins: 0,
-            threes: 0,
-            fours: 0,
-            tens: 0,
-            gradeText: "N/A"
+            score: null
         },
         overall: {
             daysPlayed: cumulativeState.length,
-            gamesPlayed: 0,
-            wins: 0,
-            threes: 0,
-            fours: 0,
-            tens: 0,
-            gradeText: "N/A",
+            bestScore: null,
+            avgScore: null,
+            currentStreak: 0,
+            bestStreak: 0
         }
     }
+
+    if (cumulativeState.length === 0) return result
+
+    let runningStreak = 0
+    let bestStreak = 0
+    const validGrades = []
 
     cumulativeState.forEach((entry, i) => {
-        let lastEntry = null
+        const grade = Number(entry.grade)
+        if (!isNaN(grade)) {
+            validGrades.push(grade)
+            if (result.overall.bestScore === null || grade > result.overall.bestScore) {
+                result.overall.bestScore = grade
+            }
+        }
+
+        let isNext = true
         if (i !== 0) {
-            lastEntry = cumulativeState[i - 1];
+            isNext = (Number(entry.number) === Number(cumulativeState[i - 1].number) + 1)
         }
-
-        let isNext = true;
-        if (lastEntry !== null) {
-            let currentNumber = Number(entry.number)
-            let lastNumber = Number(lastEntry.number)
-            isNext = (currentNumber === (lastNumber + 1))
-
-            //console.log("Current Number: " + currentNumber + " LastNumber: " + lastNumber + " isNext: " + isNext)
-        }
-
-        if (isNext) {
-            result.today.streak += 1
-        } else {
-            result.today.streak = 1
-        }
-
-        if (i === (cumulativeState.length - 1)) {
-            result.today.gamesPlayed += entry.distances.length;
-            const evaluatedDistances = evaluateDistances(entry.distances)
-
-            result.today.wins += evaluatedDistances.zeros
-            result.today.threes += evaluatedDistances.threes
-            result.today.fours += evaluatedDistances.fours
-            result.today.tens += evaluatedDistances.tens
-        }
-
-        result.overall.gamesPlayed += entry.distances.length;
-        const evaluatedDistances = evaluateDistances(entry.distances)
-
-        result.overall.wins += evaluatedDistances.zeros
-        result.overall.threes += evaluatedDistances.threes
-        result.overall.fours += evaluatedDistances.fours
-        result.overall.tens += evaluatedDistances.tens
+        runningStreak = isNext ? runningStreak + 1 : 1
+        if (runningStreak > bestStreak) bestStreak = runningStreak
     })
 
-    if (result.today.gamesPlayed > 0) {
-        let grade = getGrade(
-            result.today.gamesPlayed,
-            result.today.wins,
-            result.today.threes,
-            result.today.fours,
-            result.today.tens
+    result.overall.currentStreak = runningStreak
+    result.overall.bestStreak = bestStreak
+
+    if (validGrades.length > 0) {
+        result.overall.avgScore = Math.round(
+            validGrades.reduce((s, g) => s + g, 0) / validGrades.length
         )
-        result.today.gradeText = grade + "%"
     }
 
-    if (result.overall.gamesPlayed > 0) {
-        overallGrade = getGrade(
-            result.overall.gamesPlayed,
-            result.overall.wins,
-            result.overall.threes,
-            result.overall.fours,
-            result.overall.tens
-        )
-        result.overall.gradeText = overallGrade + "%"
-    }
+    const todayEntry = cumulativeState[cumulativeState.length - 1]
+    const todayGrade = Number(todayEntry.grade)
+    if (!isNaN(todayGrade)) result.today.score = todayGrade
 
-    return result;
+    return result
 }
 
 function evaluateDistances(distances) {
@@ -377,77 +341,127 @@ function evaluateDistances(distances) {
 }
 
 function updateAllStats() {
+    updateCumulativeData()
     const results = processStats(cumulativeData)
-
-    updateTodaysStats(
-        results.today.wins,
-        results.today.threes,
-        results.today.fours,
-        results.today.tens,
-        results.today.gradeText
-    )
-
-    updateOverallStats(
-        results.overall.daysPlayed,
-        results.overall.gamesPlayed,
-        results.overall.wins
-    )
-
-    populateDistribution(
-        results.overall.wins,
-        results.overall.threes,
-        results.overall.fours,
-        results.overall.tens
-    )
+    renderPerformanceTab(results)
 }
 
-function updateTodaysStats(correct, threes, fours, tens, grade) {
-    let firstStatisticsArray = Array.from(firstStatisticGrid.querySelectorAll('.statistic'));
-
-    const todayCorrect = firstStatisticsArray[0].querySelector('.statistic-data');
-    const todayThrees = firstStatisticsArray[1].querySelector('.statistic-data');
-    const todayfours = firstStatisticsArray[2].querySelector('.statistic-data');
-    const todaytens = firstStatisticsArray[3].querySelector('.statistic-data');
-    const todayGrade = firstStatisticsArray[4].querySelector('.statistic-data');
-
-    todayCorrect.textContent = correct
-    todayThrees.textContent = threes
-    todayfours.textContent = fours
-    todaytens.textContent = tens
-    todayGrade.textContent = grade
+function getScoreRank(score) {
+    if (score >= 95) return 'Genius'
+    if (score >= 90) return 'Amazing'
+    if (score >= 80) return 'Great'
+    if (score >= 70) return 'Nice'
+    if (score >= 60) return 'Solid'
+    if (score >= 50) return 'Good'
+    if (score >= 40) return 'Moving Up'
+    if (score >= 20) return 'Good Start'
+    return 'Beginner'
 }
 
-function updateOverallStats(days, games, wins) {
-    let secondStatisticsArray = Array.from(secondStatisticGrid.querySelectorAll('.statistic'));
-    const winPercent = (games > 0) ? (Math.round((wins / games) * 100) + "%") : "0%"
+function renderPerformanceTab(results) {
+    const scorePctEl = document.querySelector('[data-stats-score-pct]')
+    const scoreRankEl = document.querySelector('[data-stats-score-rank]')
+    if (scorePctEl && scoreRankEl) {
+        if (results.today.score !== null) {
+            scorePctEl.textContent = results.today.score + '%'
+            scoreRankEl.textContent = getScoreRank(results.today.score)
+        } else {
+            scorePctEl.textContent = '\u2013'
+            scoreRankEl.textContent = ''
+        }
+    }
 
-    const overallDays = secondStatisticsArray[0].querySelector('.statistic-data');
-    const overallGames = secondStatisticsArray[1].querySelector('.statistic-data');
-    const overallWinPercent = secondStatisticsArray[2].querySelector('.statistic-data');
+    renderTodayRounds()
 
-    overallDays.textContent = days
-    overallGames.textContent = games
-    overallWinPercent.textContent = winPercent
+    const bestScoreEl = document.querySelector('[data-stats-best-score]')
+    const avgScoreEl = document.querySelector('[data-stats-avg-score]')
+    const curStreakEl = document.querySelector('[data-stats-cur-streak]')
+    const bestStreakEl = document.querySelector('[data-stats-best-streak]')
+
+    if (bestScoreEl) bestScoreEl.textContent = results.overall.bestScore !== null ? results.overall.bestScore + '%' : '\u2013'
+    if (avgScoreEl) avgScoreEl.textContent = results.overall.avgScore !== null ? results.overall.avgScore + '%' : '\u2013'
+    if (curStreakEl) curStreakEl.textContent = results.overall.currentStreak
+    if (bestStreakEl) bestStreakEl.textContent = results.overall.bestStreak
 }
 
-function populateDistribution(correct, threes, fours, tens) {
-    const statBars = document.querySelectorAll('.stat-bar')
-    const largest = Math.max(correct, threes, fours, tens)
+function renderTodayRounds() {
+    const container = document.querySelector('[data-stats-rounds]')
+    if (!container) return
+    container.innerHTML = ''
 
-    const arr = [correct, threes, fours, tens]
+    // cumulativeData is the persistent source of truth for completed round scores
+    const todayEntry = cumulativeData.find(e => e.number === gameState.puzzleNumber)
 
-    statBars.forEach((bar, index) => {
-        const number = arr[index]
+    for (let i = 0; i < 3; i++) {
+        const game = gameState.games[i]
+        const roundNum = i + 1
+        const row = document.createElement('div')
+        row.className = 'stats-round-row'
 
-        bar.textContent = number
+        // A round is complete if gameState says so OR cumulativeData has a score for it
+        const inCumulative = todayEntry && Array.isArray(todayEntry.distances) && todayEntry.distances.length > i
+        const isComplete = (game && game.isComplete) || inCumulative
 
-        bar.style.width = ((number === 0) ? 1 : 1 + ((number / largest) * 10)) + "em"
+        if (!isComplete) {
+            row.classList.add('stats-round-row-unplayed')
+            row.innerHTML = `
+                <div class="stats-round-col-id">
+                    <div class="stats-round-label">Round ${roundNum}</div>
+                    <div class="stats-round-target">Target: ${(game && game.numbers && game.numbers[0]) || '\u2013'}</div>
+                </div>
+                <div class="stats-round-placeholder">Play this round to see results.</div>
+            `
+            container.appendChild(row)
+            continue
+        }
 
-        if (number === largest) bar.classList.add('last')
-        else bar.classList.remove('last')
-    })
+        const target = (game && game.numbers && game.numbers[0]) || '\u2013'
+        // Prefer cumulativeData scores as they are the persisted source of truth
+        const dist = inCumulative ? todayEntry.distances[i] : normalizeDistance(game.distance)
+        const elapsed = (inCumulative && todayEntry.elapsedTimes && todayEntry.elapsedTimes[i] != null)
+            ? todayEntry.elapsedTimes[i]
+            : (game && Number.isFinite(Number(game.elapsedSeconds)) ? Math.floor(Number(game.elapsedSeconds)) : 0)
+        const roundScore = Math.max(0, Math.min(100, getDistanceScore(dist) + getTimerPenalty(elapsed)))
+
+        const mins = Math.floor(elapsed / 60)
+        const secs = elapsed % 60
+        const timeStr = mins + ':' + (secs < 10 ? '0' : '') + secs
+
+        const isExact = dist === 0
+        const isClose = dist > 0 && dist <= 3
+        const scoreColor = roundScore >= 80 ? '#009982' : '#e07000'
+        const distMainText = isExact ? 'Exact answer' : dist + ' away'
+        const currentAnswer = game && game.currentAnswer != null ? game.currentAnswer : null
+        const distSubText = isExact ? '0 away' : 'Answer: ' + (currentAnswer !== null ? currentAnswer : '\u2013')
+
+        const wrapColor = (isExact || isClose) ? '#009982' : '#e07000'
+        const checkSvg = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:0.35em;height:0.35em"><path d="M5 12l4.5 4.5L19 8" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+        const distIconHtml = `<div class="stats-round-dist-icon-wrap" style="background:${wrapColor}">${isExact ? checkSvg : ''}</div>`
+
+        row.innerHTML = `
+            <div class="stats-round-col-id">
+                <div class="stats-round-label">Round ${roundNum}</div>
+                <div class="stats-round-target">Target: ${target}</div>
+            </div>
+            <div class="stats-round-col-dist">
+                ${distIconHtml}
+                <div class="stats-round-dist-text">
+                    <div class="stats-round-dist-top">${distMainText}</div>
+                    <div class="stats-round-dist-bot">${distSubText}</div>
+                </div>
+            </div>
+            <div class="stats-round-col-time">
+                <div class="stats-round-time-icon-wrap"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:1.7em;height:1.7em"><circle cx="12" cy="12" r="9" stroke="#009982" stroke-width="1.8" fill="none"/><path d="M12 7v5l3.5 2" stroke="#009982" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                <div class="stats-round-time-text">
+                    <div class="stats-round-time-val">${timeStr}</div>
+                    <div class="stats-round-time-bot">Time</div>
+                </div>
+            </div>
+            <div class="stats-round-col-score" style="color:${scoreColor}">${roundScore}%</div>
+        `
+        container.appendChild(row)
+    }
 }
-
 
 function getGrade(games, wins, threes, fours, tens) {
     const maxScore = games * 5;
@@ -464,14 +478,7 @@ function pressShare() {
     }
 
     let lastEntry = cumulativeData[cumulativeData.length - 1]
-    const evaluatedDistances = evaluateDistances(lastEntry.distances)
-    let grade = getGrade(
-        lastEntry.distances.length,
-        evaluatedDistances.zeros,
-        evaluatedDistances.threes,
-        evaluatedDistances.fours,
-        evaluatedDistances.tens
-    )
+    const grade = lastEntry.grade
 
     let textToCopy = "Try Uimhir! \nwww.independent.ie/uimhir \n Puzzle: " + targetGameNumber + " " + "\n" + " My score today: " + grade + "% \n" 
 

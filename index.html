@@ -430,82 +430,69 @@
             </div>
 
             <div class="overlay active" data-stats-overlay data-overlay-performance>
-                <div class="centered">
-                    <div class="text-box-info gap centered stats-performance-message" style="--amount: 1.15em" data-performance-message>
-                        You ranked in the top 18% today - <br> well done! Your average rank <br> over the last 30 days has been 54%.
-                    </div>
-                </div>
 
-                <div class="stats-grid-large stats-legacy-grid" data-statistics-first>
-                    <div class="statistic">
-                        <h4 class="statistic-data">0</h4>
-                        <p class="statistic-label">Correct</p>
+                <!-- Score circle + Today's Score card -->
+                <div class="stats-perf-top gap" style="--amount: 0.9em">
+                    <div class="stats-score-circle">
+                        <div class="stats-score-pct" data-stats-score-pct>–</div>
+                        <div class="stats-score-rank" data-stats-score-rank></div>
                     </div>
-                    <div class="statistic">
-                        <h4 class="statistic-data">0</h4>
-                        <p class="statistic-label">1 to 3</p>
-                    </div>
-                    <div class="statistic">
-                        <h4 class="statistic-data">0</h4>
-                        <p class="statistic-label">4 to 10</p>
-                    </div>
-                    <div class="statistic">
-                        <h4 class="statistic-data">0</h4>
-                        <p class="statistic-label">Over 10</p>
-                    </div>
-                    <div class="statistic">
-                        <h4 class="statistic-data">0</h4>
-                        <p class="statistic-label">Grade</p>
-                    </div>
-                </div>
-
-                <div class="centered">
-                    <div class="text-box-info heading gap centered" style="--amount: 0.8em">
-                        Your overall statistics
-                    </div>
-                </div>
-                <hr class="hr-stats gap" style="--amount: 0.2em">
-
-                <div class="stats-grid stats-grid-performance gap" style="--amount: 0.55em" data-statistics-second>
-                    <div class="statistic">
-                        <h4 class="statistic-data">0</h4>
-                        <p class="statistic-label">Days played</p>
-                    </div>
-                    <div class="statistic">
-                        <h4 class="statistic-data">0</h4>
-                        <p class="statistic-label">Games played</p>
-                    </div>
-                    <div class="statistic">
-                        <h4 class="statistic-data">0%</h4>
-                        <p class="statistic-label">Win %</p>
-                    </div>
-                </div>
-
-                <hr class="hr-stats gap" style="--amount: 0.8em">
-
-                <div class="centered">
-                    <div class="text-box-info heading gap centered" style="--amount: 0.35em">
-                        Answer Distribution
-                    </div>
-                </div>
-
-                <div class="centered">
-                    <div class="stat-bar-grid stats-distribution-grid">
-                        <div class="box left stats-distribution-row">
-                            <div class="text-stats-guess one">Correct</div>
-                            <div class="stat-bar one" style="--width: 10em">0</div>
+                    <div class="stats-today-card">
+                        <div class="stats-today-star-wrap">
+                            <svg class="stats-today-star-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z" fill="#fff" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/>
+                            </svg>
                         </div>
-                        <div class="box left stats-distribution-row">
-                            <div class="text-stats-guess two">Within 1 to 3</div>
-                            <div class="stat-bar two" style="--width: 1em">0</div>
+                        <div class="stats-today-card-text">
+                            <div class="stats-today-card-title">Today's Score</div>
+                            <div class="stats-today-card-sub">Average score across 3 rounds</div>
                         </div>
-                        <div class="box left stats-distribution-row">
-                            <div class="text-stats-guess three">Within 4 to 10</div>
-                            <div class="stat-bar three" style="--width: 1em">0</div>
-                        </div>
-                        <div class="box left stats-distribution-row">
-                            <div class="text-stats-guess four">Over 10</div>
-                            <div class="stat-bar four" style="--width: 1em">0</div>
+                    </div>
+                </div>
+
+                <!-- Your 3 Rounds Today -->
+                <div class="stats-rounds-section gap" style="--amount: 0.75em">
+                    <div class="stats-rounds-heading">Your 3 Rounds Today</div>
+                    <div class="stats-rounds-card">
+                        <div class="stats-rounds-list" data-stats-rounds></div>
+                    </div>
+                </div>
+
+                <!-- Your Overall Statistics -->
+                <div class="stats-overall-section gap" style="--amount: 0.6em">
+                    <div class="stats-overall-heading">Your Overall Statistics</div>
+                    <div class="stats-overall-card">
+                        <div class="stats-overall-grid">
+                            <div class="stats-overall-item">
+                                <div class="stats-overall-icon-wrap">
+                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4H5a2 2 0 0 0-2 2v1a4 4 0 0 0 4 4h0M17 4h2a2 2 0 0 1 2 2v1a4 4 0 0 1-4 4h0M7 4h10v7a5 5 0 0 1-10 0V4z" stroke="#009982" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </div>
+                                <div class="stats-overall-value" data-stats-best-score>–</div>
+                                <div class="stats-overall-label">Best score</div>
+                            </div>
+                            <div class="stats-overall-item">
+                                <div class="stats-overall-icon-wrap">
+                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="3" y="12" width="4" height="9" rx="0.5" stroke="#009982" stroke-width="1.6"/><rect x="10" y="7" width="4" height="14" rx="0.5" stroke="#009982" stroke-width="1.6"/><rect x="17" y="3" width="4" height="18" rx="0.5" stroke="#009982" stroke-width="1.6"/></svg>
+                                </div>
+                                <div class="stats-overall-value" data-stats-avg-score>–</div>
+                                <div class="stats-overall-label">Average score</div>
+                            </div>
+                            <div class="stats-overall-item">
+                                <div class="stats-overall-icon-wrap">
+                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3C8.93 6.86 9.78 4.95 12 3c.5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z" stroke="#009982" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </div>
+                                <div class="stats-overall-value" data-stats-cur-streak>–</div>
+                                <div class="stats-overall-label">Current streak</div>
+                                <div class="stats-overall-chip">days</div>
+                            </div>
+                            <div class="stats-overall-item">
+                                <div class="stats-overall-icon-wrap">
+                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z" stroke="#009982" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                                </div>
+                                <div class="stats-overall-value" data-stats-best-streak>–</div>
+                                <div class="stats-overall-label">Best streak</div>
+                                <div class="stats-overall-chip">days</div>
+                            </div>
                         </div>
                     </div>
                 </div>

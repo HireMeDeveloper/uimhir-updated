@@ -852,3 +852,348 @@ button.hint.changed {
 .scoring-example-label {
     font-size: 0.9em;
 }
+
+/* ---- Stats Performance Tab – new layout ---- */
+
+.stats-perf-top {
+    display: flex;
+    align-items: center;
+    gap: 0.7em;
+    width: 100%;
+}
+
+.stats-score-circle {
+    width: 5.6em;
+    height: 5.6em;
+    border-radius: 50%;
+    border: 0.24em solid #009982;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    text-align: center;
+}
+
+.stats-score-pct {
+    font-size: 1.1em;
+    font-weight: bold;
+    line-height: 1.1;
+}
+
+.stats-score-rank {
+    font-size: 0.54em;
+    color: #009982;
+    font-weight: bold;
+    margin-top: 0.1em;
+}
+
+.stats-today-card {
+    flex: 1;
+    background: #e8f8f6;
+    border-radius: 0.45em;
+    padding: 0.45em 0.65em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.stats-today-star-wrap {
+    width: 2em;
+    height: 2em;
+    border-radius: 50%;
+    background: #009982;
+    border: 1.5px solid #009982;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.stats-today-star-icon {
+    width: 1em;
+    height: 1em;
+    flex-shrink: 0;
+}
+
+.stats-today-card-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1em;
+}
+
+.stats-today-card-title {
+    font-size: 0.6em;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.stats-today-card-sub {
+    font-size: 0.47em;
+    color: #555;
+    line-height: 1.3;
+}
+
+/* Round rows */
+
+.stats-rounds-section {
+    width: 100%;
+}
+
+.stats-rounds-heading {
+    font-size: 0.62em;
+    font-weight: bold;
+    margin-bottom: 0.4em;
+}
+
+.stats-rounds-card {
+    background: #fff;
+    border-radius: 0.45em;
+}
+
+.stats-round-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    align-items: center;
+    font-size: 0.52em;
+    gap: 0;
+    position: relative;
+}
+
+/* Inset horizontal divider between rounds — doesn't touch left/right edges */
+.stats-round-row + .stats-round-row::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0.8em;
+    right: 0.8em;
+    height: 1px;
+    background: #e5e5e5;
+}
+
+.stats-round-row-unplayed {
+    grid-template-columns: auto 1fr;
+}
+
+.stats-round-placeholder {
+    grid-column: 2 / -1;
+    font-size: 0.9em;
+    color: #888;
+    font-style: italic;
+    padding-left: 0.4em;
+}
+
+/* Columns — vertical dividers via ::after, inset from top/bottom */
+.stats-round-col-id,
+.stats-round-col-dist,
+.stats-round-col-time,
+.stats-round-col-score {
+    position: relative;
+}
+
+.stats-round-col-id {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.12em;
+    padding: 0.95em 0.6em;
+    overflow: hidden;
+}
+
+.stats-round-col-id::after,
+.stats-round-col-dist::after,
+.stats-round-col-time::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0.5em;
+    bottom: 0.5em;
+    width: 1px;
+    background: #e5e5e5;
+}
+
+.stats-round-label {
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.stats-round-target {
+    font-size: 0.88em;
+    color: #555;
+    white-space: nowrap;
+}
+
+.stats-round-col-dist {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.45em;
+    padding: 0.85em 0.5em;
+    overflow: hidden;
+}
+
+.stats-round-dist-icon-wrap {
+    width: 0.7em;
+    height: 0.7em;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.stats-round-dist-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.12em;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.stats-round-dist-top {
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1;
+}
+
+.stats-round-dist-bot {
+    font-size: 0.88em;
+    color: #555;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1;
+}
+
+.stats-round-col-time {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.4em;
+    padding: 0.85em 0.4em;
+}
+
+.stats-round-time-icon-wrap {
+    width: 1.7em;
+    height: 1.7em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.stats-round-time-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.12em;
+}
+
+.stats-round-time-val {
+    font-weight: 600;
+    white-space: nowrap;
+    line-height: 1;
+}
+
+.stats-round-time-bot {
+    font-size: 0.88em;
+    color: #555;
+    white-space: nowrap;
+}
+
+.stats-round-col-score {
+    font-size: 1.7em;
+    font-weight: bold;
+    text-align: center;
+    color: #009982;
+    padding: 0.95em 0.4em;
+    white-space: nowrap;
+}
+
+/* Overall Statistics */
+
+.stats-overall-section {
+    width: 100%;
+}
+
+.stats-overall-heading {
+    font-size: 0.62em;
+    font-weight: bold;
+    margin-bottom: 0.4em;
+}
+
+.stats-overall-card {
+    background: #fff;
+    border-radius: 0.45em;
+}
+
+.stats-overall-grid {
+    display: flex;
+    width: 100%;
+}
+
+.stats-overall-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1;
+    padding: 0.45em 0.2em;
+    position: relative;
+    min-width: 0;
+}
+
+/* Inset vertical divider between overall stat items — doesn't touch top/bottom edges */
+.stats-overall-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0.5em;
+    bottom: 0.5em;
+    width: 1px;
+    background: #e5e5e5;
+}
+
+.stats-overall-icon-wrap {
+    width: 1.7em;
+    height: 1.7em;
+    background: #e8f8f6;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stats-overall-icon-wrap svg {
+    width: 1em;
+    height: 1em;
+}
+
+.stats-overall-value {
+    font-size: 0.9em;
+    font-weight: bold;
+    margin-top: 0.2em;
+    line-height: 1;
+}
+
+.stats-overall-chip {
+    font-size: 0.44em;
+    background: #e8f8f6;
+    color: #009982;
+    border-radius: 0.5em;
+    padding: 0.1em 0.45em;
+    margin-top: 0.15em;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.stats-overall-label {
+    font-size: 0.46em;
+    color: #555;
+    margin-top: 0.15em;
+    white-space: nowrap;
+}
